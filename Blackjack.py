@@ -59,7 +59,7 @@ while True:
             DealerAceCount += 1
 
         dealerSum += val
-
+        
         if i == 0:
             print("The dealer shows a %s of %s.\n" % (face, suit))
             ShownDealerValue = val
@@ -78,20 +78,20 @@ while True:
                 print("An Ace saves you from going bust.")
                 continue
             else:    
-                print("You bust!\n")
+                print("You've gone bust!\n")
                 break
         
         # There's a few things that need to be checked at the first step
         if step == 0:
             if runningSum == 21:
                 bjEarning = int(1.5 * bet)
-                money = money + bet + bjEarning
                 if runningSum == dealerSum:
                     print("Both the dealer and you got a Natural Blackjack! You get your bet of %s dollars back." % bet)
                     money += bet
                     continue
                 else:
                     print("Natural Blackjack! You get 1.5 times your bet in profit! You earn %s dollars. You now have %s dollars." % (bjEarning, money ))
+                    money = money + bet + bjEarning
                     continue
             print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % runningSum)
             action = str(input())
