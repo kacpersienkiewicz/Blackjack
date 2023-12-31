@@ -7,6 +7,12 @@ print("Welcome to the blackjack table. You currently have 100 dollars.\n")
 
 while True:
 
+    PlayerHand = []
+    DealerHand = []
+
+    PlayerAceCount = 0
+    DealerAceCount = 0
+
     if money == 0:
         print("You've busted!")
         break
@@ -20,9 +26,6 @@ while True:
         continue
 
     Deck = bj.createDeck()
-
-    PlayerAceCount = 0
-    DealerAceCount = 0
     
     if bet > money:
         print("You don't have enough money to bet that much. You have %s dollars.\n" % money)
@@ -40,6 +43,8 @@ while True:
 
     for i in range(2):
         suit, face, val, Deck = bj.chooseDescribeCard(Deck)
+        PlayerHand.append([face,val,suit])
+        print(PlayerHand)
         
         if val == 11:
             PlayerAceCount += 1
@@ -54,6 +59,7 @@ while True:
 
     for i in range(2):
         suit, face, val, Deck = bj.chooseDescribeCard(Deck)
+        DealerHand.append([face, val, suit])
 
         if val == 11:
             DealerAceCount += 1
@@ -93,14 +99,24 @@ while True:
                     print("Natural Blackjack! You get 1.5 times your bet in profit! You earn %s dollars. You now have %s dollars." % (bjEarning, money ))
                     money = money + bet + bjEarning
                     continue
+            elif PlayerHand[0][0] == PlayerHand[1][0]:
+                print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % runningSum)
+                action = str(input())
+
             print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % runningSum)
             action = str(input())
         
         else:
             print("You are at %s. Would you like to draw (a), or stand (s)?\n" % runningSum)
             action = str(input())
+
+        if action == 'f' and step == 0:
+            PlayerHand2 = [PlayerHand[1]]
+            PlayerHand.pop(1)
+            
+
         
-        if action == 'd' and step == 0:
+        elif action == 'd' and step == 0:
             money -= bet
             bet *= 2
             suit, face, val, Deck = bj.chooseDescribeCard(Deck)
