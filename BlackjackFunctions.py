@@ -47,3 +47,31 @@ def chooseDescribeCard(Deck):
         face = str(faceVal)
 
     return suit, face, val, Deck
+
+def ProcessAction(Action, PlayerHand, money, bet, runningSum, step):
+
+    if Action == 'f' and step == 0:
+        PlayerHand2 = [PlayerHand[1]]
+        PlayerHand.pop(1)
+        
+    elif Action == 'd' and step == 0:
+        money -= bet
+        bet *= 2
+        suit, face, val, Deck = chooseDescribeCard(Deck)
+        runningSum += val
+        print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, runningSum))
+
+    elif Action == 'a':
+        suit, face, val, Deck = chooseDescribeCard(Deck)
+        runningSum += val
+        print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, runningSum))
+        step += 1
+
+    elif Action == 's':
+        print("You stand at %s.\n" % runningSum)
+
+    else:
+        print("Please enter a valid option.\n")
+
+
+    return PlayerHand, money, bet, runningSum, step

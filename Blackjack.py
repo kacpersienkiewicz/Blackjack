@@ -102,42 +102,16 @@ while True:
             elif PlayerHand[0][0] == PlayerHand[1][0]:
                 print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % runningSum)
                 action = str(input())
+                PlayerHand, money, bet, runningSum, step = bj.ProcessAction(action, PlayerHand, money, bet, runningSum, step)
 
             print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % runningSum)
             action = str(input())
+            PlayerHand, money, bet, runningSum, step = bj.ProcessAction(action, PlayerHand, money, bet, runningSum, step)
         
         else:
             print("You are at %s. Would you like to draw (a), or stand (s)?\n" % runningSum)
             action = str(input())
-
-        if action == 'f' and step == 0:
-            PlayerHand2 = [PlayerHand[1]]
-            PlayerHand.pop(1)
-            
-
-        
-        elif action == 'd' and step == 0:
-            money -= bet
-            bet *= 2
-            suit, face, val, Deck = bj.chooseDescribeCard(Deck)
-            runningSum += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, runningSum))
-            break
-
-        elif action == 'a':
-            suit, face, val, Deck = bj.chooseDescribeCard(Deck)
-            runningSum += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, runningSum))
-            step += 1
-            continue
-
-        elif action == 's':
-            print("You stand at %s.\n" % runningSum)
-            break
-
-        else:
-            print("Please enter a valid option.\n")
-            continue
+            PlayerHand, money, bet, runningSum, step = bj.ProcessAction(action, PlayerHand, money, bet, runningSum, step)
         
     # loop for dealer
         
