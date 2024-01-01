@@ -70,7 +70,7 @@ while True:
             print("The dealer shows a %s of %s.\n" % (face, suit))
             ShownDealerValue = val
         if i == 1:
-            hiddenCard = f"{face} of {suit}"
+            revealedCard = f"{face} of {suit}"
 
     # loop for the player
     step = 0
@@ -115,7 +115,7 @@ while True:
         
     # loop for dealer
         
-    print("The dealer reveals a %s. \n" % hiddenCard)
+    print("The dealer reveals a %s. \n" % revealedCard)
 
     while dealerSum < 16:
         suit, face, val, Deck = bj.chooseDescribeCard(Deck)
