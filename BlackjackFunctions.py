@@ -3,7 +3,7 @@ import random as rand
 
 def createDeck():
     Deck = []
-    for i in range(1,52):
+    for i in range(0,52):
         Deck.append(int(i + 1))
 
     return Deck
@@ -48,7 +48,7 @@ def chooseDescribeCard(Deck):
 
     return suit, face, val, Deck
 
-def SplitCard():
+def SplitCard(Hand1,Hand2, ):
 
 
 
