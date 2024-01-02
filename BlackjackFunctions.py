@@ -1,14 +1,5 @@
 import random as rand
 
-
-def createDeck():
-    Deck = []
-    for i in range(0,52):
-        Deck.append(int(i + 1))
-
-    return Deck
-
-
 def chooseDescribeCard(Deck):
     card = rand.choice(Deck)
     suitVal = int(card / 13)

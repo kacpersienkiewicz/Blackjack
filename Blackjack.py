@@ -25,7 +25,11 @@ while True:
         print("Please enter a valid integer to bet.")
         continue
 
-    Deck = bj.createDeck()
+    Deck = [i + 1 for i in range(0,52)]
+
+    print(Deck)
+
+    
     
     if bet > money:
         print("You don't have enough money to bet that much. You have %s dollars.\n" % money)
