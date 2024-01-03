@@ -39,7 +39,7 @@ def chooseDescribeCard(Deck):
 
     return suit, face, val, Deck
 
-def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, money, bet ):
+def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet ):
     PlayerAceCount = 0
     if Hand1[0][1] == 11:
         PlayerAceCount += 1
@@ -108,6 +108,8 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, money, bet ):
         else:
             print("Please enter a valid option.\n")
             continue
+
+    DealerSum = DealerDraw(DealerSum, Deck, DealerAceCount)
 
     Scoring(Sum1, DealerSum, money, bet )
     Scoring(Sum2, DealerSum, money, bet )

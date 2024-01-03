@@ -121,7 +121,7 @@ while True:
             PlayerHand2.append([face, val, suit])
             PlayerSum2 = PlayerHand2[0][1] + val
 
-            bj.SplitCard(PlayerHand, PlayerHand2, PlayerSum1, PlayerSum2, )
+            bj.SplitCard(PlayerHand, PlayerHand2, PlayerSum1, PlayerSum2, dealerSum, DealerAceCount, money, bet )
             break
         
         elif action == 'd' and step == 0:
@@ -148,14 +148,14 @@ while True:
             continue
         
     # loop for dealer
-        
-    print("The dealer reveals a %s. \n" % hiddenCard)
+    
+    if action != 'f':    
+        print("The dealer reveals a %s. \n" % hiddenCard)
 
-    dealerSum = bj.DealerDraw(dealerSum, Deck, DealerAceCount)
+        dealerSum = bj.DealerDraw(dealerSum, Deck, DealerAceCount)
 
-    print("Dealer shows %s." % (dealerSum))
+        print("Dealer shows %s." % (dealerSum))
 
-    # scoring the game
-    money = bj.Scoring(PlayerSum, dealerSum, money, bet)
+        money = bj.Scoring(PlayerSum, dealerSum, money, bet)
 
    
