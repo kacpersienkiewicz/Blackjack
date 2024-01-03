@@ -26,10 +26,6 @@ while True:
         continue
 
     Deck = [i + 1 for i in range(0,52)]
-
-    print(Deck)
-
-    
     
     if bet > money:
         print("You don't have enough money to bet that much. You have %s dollars.\n" % money)
@@ -43,7 +39,7 @@ while True:
 
     # drawing the two cards for your hand
     
-    runningSum = 0
+    PlayerSum = 0
 
     for i in range(2):
         suit, face, val, Deck = bj.chooseDescribeCard(Deck)
@@ -53,7 +49,7 @@ while True:
         if val == 11:
             PlayerAceCount += 1
 
-        runningSum += val
+        PlayerSum += val
         print("You drew a %s of %s.\n" % (val,suit))
         i += 1
 
@@ -81,9 +77,9 @@ while True:
 
     while True:
 
-        if runningSum > 21:
+        if PlayerSum > 21:
             if PlayerAceCount > 0:
-                runningSum -= 10
+                PlayerSum -= 10
                 PlayerAceCount -= 1
                 print("An Ace saves you from going bust.")
                 continue
@@ -93,9 +89,9 @@ while True:
         
         # There's a few things that need to be checked at the first step
         if step == 0:
-            if runningSum == 21:
+            if PlayerSum == 21:
                 bjEarning = int(1.5 * bet)
-                if runningSum == dealerSum:
+                if PlayerSum == dealerSum:
                     print("Both the dealer and you got a Natural Blackjack! You get your bet of %s dollars back." % bet)
                     money += bet
                     continue
@@ -104,14 +100,14 @@ while True:
                     money = money + bet + bjEarning
                     continue
             elif PlayerHand[0][0] == PlayerHand[1][0]:
-                print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % runningSum)
+                print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % PlayerSum)
                 action = str(input())
-
-            print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % runningSum)
-            action = str(input())
+            else:
+                print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % PlayerSum)
+                action = str(input())
         
         else:
-            print("You are at %s. Would you like to draw (a), or stand (s)?\n" % runningSum)
+            print("You are at %s. Would you like to draw (a), or stand (s)?\n" % PlayerSum)
             action = str(input())
 
         if action == 'f' and step == 0:
@@ -125,26 +121,26 @@ while True:
             PlayerHand2.append([face, val, suit])
             PlayerSum2 = PlayerHand2[0][1] + val
 
-            bj.SplitCard()
+            bj.SplitCard(PlayerHand, PlayerHand2, PlayerSum1, PlayerSum2, )
             break
         
         elif action == 'd' and step == 0:
             money -= bet
             bet *= 2
             suit, face, val, Deck = bj.chooseDescribeCard(Deck)
-            runningSum += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, runningSum))
+            PlayerSum += val
+            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, PlayerSum))
             break
 
         elif action == 'a':
             suit, face, val, Deck = bj.chooseDescribeCard(Deck)
-            runningSum += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, runningSum))
+            PlayerSum += val
+            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, PlayerSum))
             step += 1
             continue
 
         elif action == 's':
-            print("You stand at %s.\n" % runningSum)
+            print("You stand at %s.\n" % PlayerSum)
             break
 
         else:
@@ -155,38 +151,11 @@ while True:
         
     print("The dealer reveals a %s. \n" % hiddenCard)
 
-    while dealerSum < 16:
-        suit, face, val, Deck = bj.chooseDescribeCard(Deck)
-        dealerSum += val
-        if dealerSum > 21 and DealerAceCount > 0:
-            dealerSum -= 10
-            DealerAceCount -= 1
-        print("Dealer draws a %s of %s. The dealer shows %s.\n" % (face, suit, dealerSum))
+    dealerSum = bj.DealerDraw(dealerSum, Deck, DealerAceCount)
 
-    print("Dealer shows %s and you show %s" % (dealerSum, runningSum))
+    print("Dealer shows %s." % (dealerSum))
 
     # scoring the game
+    money = bj.Scoring(PlayerSum, dealerSum, money, bet)
 
-    if dealerSum > 21:
-            dealerSum = 0
-    if runningSum > 21:
-            runningSum = 0
-
-    if dealerSum < runningSum:
-        print("You won this round and %s dollars!" % bet)
-        money += 2*bet
-
-    elif dealerSum > runningSum:
-        print("You lost this round and %s dollars!" % bet)
-
-    elif dealerSum == runningSum:
-        if runningSum == 0:
-            print("You went bust! You lose %s dollars." % bet)
-            continue
-        else:
-            print("You drew with the dealer. You get your bet of %s dollars back." % bet)
-            money += bet
-    
-    else:
-        print("Strange Boardstate.")
    
