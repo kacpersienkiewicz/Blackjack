@@ -53,7 +53,6 @@ while True:
 
         PlayerSum += val
         print("You drew a %s of %s.\n" % (val,suit))
-        i += 1
 
     dealerSum = 0
 
