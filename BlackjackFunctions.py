@@ -39,12 +39,14 @@ def chooseDescribeCard(Deck):
 
     return suit, face, val, Deck
 
-def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet ):
+def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet, Deck ):
     PlayerAceCount = 0
     if Hand1[0][1] == 11:
         PlayerAceCount += 1
     if Hand1[1][1] == 11:
         PlayerAceCount += 1
+
+    print("Your first hand is the %s of %s, and the %s of %s" % (Hand1[0][0], Hand1[0][2], Hand1[1][0], Hand1[1][2]))
 
     while True:
         if Sum1 > 21:
@@ -80,6 +82,7 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet ):
     if Hand2[1][1] == 11:
         PlayerAceCount += 1
 
+    print("Your second hand is the %s of %s, and the %s of %s" % (Hand2[0][0], Hand2[0][2], Hand2[1][0], Hand2[1][2]))
 
     while True:
         if Sum2 > 21:
@@ -111,8 +114,8 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet ):
 
     DealerSum = DealerDraw(DealerSum, Deck, DealerAceCount)
 
-    Scoring(Sum1, DealerSum, money, bet )
-    Scoring(Sum2, DealerSum, money, bet )
+    Scoring(Sum1, DealerSum, money, bet / 2 )
+    Scoring(Sum2, DealerSum, money, bet / 2 )
     return money
 
 def Scoring(PlayerSum, DealerSum, money, bet):

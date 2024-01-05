@@ -94,11 +94,11 @@ while True:
                 if PlayerSum == dealerSum:
                     print("Both the dealer and you got a Natural Blackjack! You get your bet of %s dollars back." % bet)
                     money += bet
-                    continue
+                    break
                 else:
                     print("Natural Blackjack! You get 1.5 times your bet in profit! You earn %s dollars. You now have %s dollars." % (bjEarning, money ))
                     money = money + bet + bjEarning
-                    continue
+                    break
             elif PlayerHand[0][0] == PlayerHand[1][0]:
                 print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % PlayerSum)
                 action = str(input())
@@ -111,6 +111,8 @@ while True:
             action = str(input())
 
         if action == 'f' and step == 0:
+            money -= bet
+            bet *= 2
             PlayerHand2 = [PlayerHand[1]]
             PlayerHand.pop(1)
             suit, face, val, Deck = bj.chooseDescribeCard(Deck)
@@ -121,7 +123,7 @@ while True:
             PlayerHand2.append([face, val, suit])
             PlayerSum2 = PlayerHand2[0][1] + val
 
-            bj.SplitCard(PlayerHand, PlayerHand2, PlayerSum1, PlayerSum2, dealerSum, DealerAceCount, money, bet )
+            bj.SplitCard(PlayerHand, PlayerHand2, PlayerSum1, PlayerSum2, dealerSum, DealerAceCount, money, bet, Deck )
             break
         
         elif action == 'd' and step == 0:
@@ -130,6 +132,15 @@ while True:
             suit, face, val, Deck = bj.chooseDescribeCard(Deck)
             PlayerSum += val
             print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, PlayerSum))
+            
+            if PlayerSum > 21:
+                if PlayerAceCount > 0:
+                    PlayerSum -= 10
+                    PlayerAceCount -= 1
+                    print("An Ace saves you from going bust.")
+                else:    
+                    print("You've gone bust!\n")
+          
             break
 
         elif action == 'a':
