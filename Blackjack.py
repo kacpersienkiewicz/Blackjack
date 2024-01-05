@@ -65,12 +65,16 @@ while True:
             DealerAceCount += 1
 
         dealerSum += val
-        
-        if i == 0:
-            print("The dealer shows a %s of %s.\n" % (face, suit))
-            ShownDealerValue = val
-        if i == 1:
-            hiddenCard = f"{face} of {suit}"
+    
+        print("The dealer shows a %s of %s.\n" % (face, suit))
+        if DealerHand[0][0] == 'Ace':
+            print("The dealer has shown an ace, would you like to bet insurance? It will cost %s dollars." % int(bet/2))
+            choice = input()
+            if choice == 'y':
+                InsuranceBet = int(bet/2)
+                money -= InsuranceBet
+            else:
+                InsuranceBet = 0
 
     # loop for the player
     step = 0
@@ -167,8 +171,17 @@ while True:
     # loop for dealer
     
     if action != 'f':    
-        print("The dealer reveals a %s to show %s total. \n" % (hiddenCard, dealerSum))
+        print("The dealer reveals a %s to show %s total. \n" % (DealerHand[1][0], dealerSum))
 
+        if InsuranceBet != 0:
+            if DealerHand[1][0] == 10:
+                print("Congrats! Insurance paid off, and you earned %s. You now have %s dollars" % int(1.5 * InsuranceBet))
+                money += int(1.5*InsuranceBet)
+                InsuranceBet = 0
+            else:
+                print("Your insurance bet did not pay off.")
+                InsuranceBet = 0
+                
         dealerSum = bj.DealerDraw(dealerSum, Deck, DealerAceCount)
 
         print("Dealer shows %s." % (dealerSum))
