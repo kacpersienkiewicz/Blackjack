@@ -114,8 +114,8 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet, De
 
     DealerSum = DealerDraw(DealerSum, Deck, DealerAceCount)
 
-    Scoring(Sum1, DealerSum, money, bet / 2 )
-    Scoring(Sum2, DealerSum, money, bet / 2 )
+    money = Scoring(Sum1, DealerSum, money, bet / 2 )
+    money = Scoring(Sum2, DealerSum, money, bet / 2 )
     return money
 
 def Scoring(PlayerSum, DealerSum, money, bet):
@@ -125,11 +125,11 @@ def Scoring(PlayerSum, DealerSum, money, bet):
             PlayerSum = 0
 
     if DealerSum < PlayerSum:
-        print("You won this hand and %s dollars!" % bet)
-        money += 2*bet
+        print("You won this hand and %s dollars!" % int(bet))
+        money += int(2*bet)
 
     elif DealerSum > PlayerSum:
-        print("You lost this hand and %s dollars!" % bet)
+        print("You lost this hand and %s dollars!" % int(bet))
 
     elif DealerSum == PlayerSum:
         if PlayerSum == 0:
@@ -153,5 +153,19 @@ def DealerDraw(DealerSum, Deck, DealerAceCount ):
             DealerAceCount -= 1
         print("Dealer draws a %s of %s. The dealer shows %s total.\n" % (face, suit, DealerSum))
 
-    
     return DealerSum
+
+def Bet(money):
+    try:
+        bet = int(input())
+    except ValueError:
+        print("Please enter a valid integer to bet.")
+        return 'continue'
+    if bet <= 0:
+        print("You cannot bet 0 or a negative value")
+        return 'continue'
+    elif bet > money:
+        print("You don't have enough money to bet %s dollars. You have %s dollars.\n" % (bet, money))
+        return 'continue'
+    else:
+        return bet

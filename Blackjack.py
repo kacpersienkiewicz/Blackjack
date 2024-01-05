@@ -9,42 +9,44 @@ while True:
 
     PlayerHand = []
     DealerHand = []
-
     PlayerAceCount = 0
     DealerAceCount = 0
 
-    if money == 0:
-        print("You've busted!")
-        break
+    if money <= 0:
+        print("You've busted! Would you like to start over? \nyes (y) no (no)")
+        try:
+            choice = str(input())
+        except ValueError:
+            print("please enter 'y' or 'n'")
+            continue
+        except choice != 'y' or 'n':
+            print("please enter 'y' or 'n'")
+            continue
+        if choice == 'n':
+            break
+        else:
+            money = 100
+            continue
 
     print("You have %s dollars. How much would you like to bet?\n" % money)
 
-    try:
-        bet = int(input())
-    except ValueError:
-        print("Please enter a valid integer to bet.")
+    bet = bj.Bet(money)
+   
+    if bet == 'continue':
         continue
 
-    Deck = [i + 1 for i in range(0,52)]
-    
-    if bet > money:
-        print("You don't have enough money to bet that much. You have %s dollars.\n" % money)
-        continue
-    elif bet <= 0:
-        print("You cannot bet 0 or a negative value")
-        continue
-    else:
-        money -= bet
-        print("You bet %s dollars. You now have %s dollars.\n" % (bet, money))
+    money -= bet
+    print("You bet %s dollars. You now have %s dollars.\n" % (bet, money))
+
+    Deck = [i  for i in range(1,53)] # list comp is much neater and nicer than a loop
 
     # drawing the two cards for your hand
     
     PlayerSum = 0
-
+    
     for i in range(2):
         suit, face, val, Deck = bj.chooseDescribeCard(Deck)
         PlayerHand.append([face,val,suit])
-        print(PlayerHand)
         
         if val == 11:
             PlayerAceCount += 1
@@ -52,8 +54,6 @@ while True:
         PlayerSum += val
         print("You drew a %s of %s.\n" % (val,suit))
         i += 1
-
-    # drawing for the dealer
 
     dealerSum = 0
 
@@ -90,20 +90,26 @@ while True:
         # There's a few things that need to be checked at the first step
         if step == 0:
             if PlayerSum == 21:
-                bjEarning = int(1.5 * bet)
                 if PlayerSum == dealerSum:
                     print("Both the dealer and you got a Natural Blackjack! You get your bet of %s dollars back." % bet)
                     money += bet
                     break
                 else:
-                    print("Natural Blackjack! You get 1.5 times your bet in profit! You earn %s dollars. You now have %s dollars." % (bjEarning, money ))
-                    money = money + bet + bjEarning
+                    print("Natural Blackjack! You get 1.5 times your bet in profit! You earn %s dollars. You now have %s dollars." % (int(bet * 2.5), money ))
+                    money = money + int(2.5 * bet)
                     break
             elif PlayerHand[0][0] == PlayerHand[1][0]:
-                print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % PlayerSum)
+                if money >= bet:
+                    print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % PlayerSum)
+                    action = str(input())
+                else:
+                    print("You don't have enough money to bet for splitting. You are at %s. Would you like to draw (a), or stand (s)?\n" % PlayerSum)
+                    action = str(input())
+            elif money >= bet: 
+                print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % PlayerSum)
                 action = str(input())
             else:
-                print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % PlayerSum)
+                print("You are at %s. Would you like to draw (a), or stand (s)?\n" % PlayerSum)
                 action = str(input())
         
         else:
@@ -161,7 +167,7 @@ while True:
     # loop for dealer
     
     if action != 'f':    
-        print("The dealer reveals a %s. \n" % hiddenCard)
+        print("The dealer reveals a %s to show %s total. \n" % (hiddenCard, dealerSum))
 
         dealerSum = bj.DealerDraw(dealerSum, Deck, DealerAceCount)
 
