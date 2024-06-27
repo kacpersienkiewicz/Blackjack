@@ -1,9 +1,9 @@
 import random as rand
 import BlackjackFunctions as bj
 
-money = 100
+StartingMoney = 100
 
-print("Welcome to the blackjack table. You currently have 100 dollars.\n")
+print("Welcome to the blackjack table. You currently have %s dollars.\n", StartingMoney)
 
 while True:
 
