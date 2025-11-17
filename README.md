@@ -1,9 +1,2 @@
 # Blackjack
-Simple text-based Blackjack in Python. The goal was to get some experience with functions, and interactivity.
-
-This program plays a game of blackjack between yourself and a very simple dealer. You are able to double down, stand, split and draw. Insurance is currently in development.
-
-I will likely be rewriting this from scratch instead of refactoring as it is.
-
-
-THere is also a cpp variant I am working on included in the repository as well.
+This a collection of implementations of console line-based Blackjack in various languages and methods. The C++ version is based on an object-oritented framework, while the Python implementation is functional. Python may be refactored and the C++ is in progress. The Python version also requires some test cases.
