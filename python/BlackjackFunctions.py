@@ -15,33 +15,32 @@ def PlayerAction(PlayerHand, PlayerSum, PlayerAceCount, DealerSum, DealerAceCoun
                 print("You've gone bust!\n")
                 break
         
-        # There's a few things that need to be checked at the first step
         if step == 0:
             if PlayerSum == 21:
                 if PlayerSum == DealerSum:
-                    print("Both the dealer and you got a Natural Blackjack! You get your bet of %s dollars back." % bet)
+                    print(f"Both the dealer and you got a Natural Blackjack! You get your bet of {bet} dollars back.")
                     money += bet
                     break
                 else:
-                    print("Natural Blackjack! You get 1.5 times your bet in profit! You earn %s dollars. You now have %s dollars." % (int(bet * 2.5), money ))
+                    print(f"Natural Blackjack! You get 1.5 times your bet in profit! You earn {(int(bet * 2.5))} dollars. You now have {money} dollars.")
                     money = money + int(2.5 * bet)
                     break
             elif PlayerHand[0][0] == PlayerHand[1][0]:
                 if money >= bet:
-                    print("You are at %s. Would you like to split (f), double down (d), draw (a), or stand (s)?\n" % PlayerSum)
+                    print(f"You are at {PlayerSum}. Would you like to split (f), double down (d), draw (a), or stand (s)?\n")
                     action = str(input())
                 else:
-                    print("You don't have enough money to bet for splitting. You are at %s. Would you like to draw (a), or stand (s)?\n" % PlayerSum)
+                    print(f"You don't have enough money to bet for splitting. You are at {PlayerSum}. Would you like to draw (a), or stand (s)?\n")
                     action = str(input())
             elif money >= bet: 
-                print("You are at %s. Would you like to double down (d), draw (a), or stand (s)?\n" % PlayerSum)
+                print(f"You are at {PlayerSum}. Would you like to double down (d), draw (a), or stand (s)?\n")
                 action = str(input())
             else:
-                print("You are at %s. Would you like to draw (a), or stand (s)?\n" % PlayerSum)
+                print(f"You are at {PlayerSum}. Would you like to draw (a), or stand (s)?\n")
                 action = str(input())
         
         else:
-            print("You are at %s. Would you like to draw (a), or stand (s)?\n" % PlayerSum)
+            print(f"You are at {PlayerSum}. Would you like to draw (a), or stand (s)?\n")
             action = str(input())
 
         if action == 'f' and step == 0:
@@ -64,7 +63,7 @@ def PlayerAction(PlayerHand, PlayerSum, PlayerAceCount, DealerSum, DealerAceCoun
             bet *= 2
             suit, face, val, Deck = chooseDescribeCard(Deck)
             PlayerSum += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, PlayerSum))
+            print(f"You drew a {face} of {suit}. You are currently holding {PlayerSum}.\n")
             
             if PlayerSum > 21:
                 if PlayerAceCount > 0:
@@ -79,12 +78,12 @@ def PlayerAction(PlayerHand, PlayerSum, PlayerAceCount, DealerSum, DealerAceCoun
         elif action == 'a':
             suit, face, val, Deck = chooseDescribeCard(Deck)
             PlayerSum += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, PlayerSum))
+            print(f"You drew a {face} of {suit}. You are currently holding {PlayerSum}.\n")
             step += 1
             continue
 
         elif action == 's':
-            print("You stand at %s.\n" % PlayerSum)
+            print(f"You stand at {PlayerSum}.\n")
             break
 
         else:
@@ -139,7 +138,7 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet, De
     if Hand1[1][1] == 11:
         PlayerAceCount += 1
 
-    print("Your first hand is the %s of %s, and the %s of %s" % (Hand1[0][0], Hand1[0][2], Hand1[1][0], Hand1[1][2]))
+    print(f"Your first hand is the {Hand1[0][0]} of {Hand1[0][2]}, and the {Hand1[1][0]} of {Hand1[1][2]}")
 
     while True:
         if Sum1 > 21:
@@ -152,17 +151,17 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet, De
                 print("You've gone bust!\n")
                 break
 
-        print("You are at %s. Would you like to draw (a), or stand (s)?\n" % Sum1)
+        print(f"You are at {Sum1}. Would you like to draw (a), or stand (s)?\n")
         action = str(input())
   
         if action == 'a':
             suit, face, val, Deck = chooseDescribeCard(Deck)
             Sum1 += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, Sum1))
+            print(f"You drew a {face} of {suit}. You are currently holding {Sum1}.\n")
             continue
 
         elif action == 's':
-            print("You stand at %s.\n" % Sum1)
+            print(f"You stand at {Sum1}.\n")
             break
 
         else:
@@ -175,7 +174,7 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet, De
     if Hand2[1][1] == 11:
         PlayerAceCount += 1
 
-    print("Your second hand is the %s of %s, and the %s of %s" % (Hand2[0][0], Hand2[0][2], Hand2[1][0], Hand2[1][2]))
+    print(f"Your second hand is the {Hand2[0][0]} of {Hand2[0][2]}, and the {Hand2[1][0]} of {Hand2[1][2]}")
 
     while True:
         if Sum2 > 21:
@@ -188,17 +187,17 @@ def SplitCard(Hand1,Hand2, Sum1, Sum2, DealerSum, DealerAceCount, money, bet, De
                 print("You've gone bust!\n")
                 break
 
-        print("You are at %s. Would you like to draw (a), or stand (s)?\n" % Sum2)
+        print(f"You are at {Sum2}. Would you like to draw (a), or stand (s)?\n")
         action = str(input())
   
         if action == 'a':
             suit, face, val, Deck = chooseDescribeCard(Deck)
             Sum2 += val
-            print("You drew a %s of %s. You are currently holding %s.\n" % (face, suit, Sum2))
+            print(f"You drew a {face} of {suit}. You are currently holding {Sum2}.\n")
             continue
 
         elif action == 's':
-            print("You stand at %s.\n" % Sum2)
+            print(f"You stand at {Sum2}.\n")
             break
 
         else:
@@ -218,17 +217,17 @@ def Scoring(PlayerSum, DealerSum, money, bet):
             PlayerSum = 0
 
     if DealerSum < PlayerSum:
-        print("You won this hand and %s dollars!" % int(bet))
+        print(f"You won this hand and {int(bet)} dollars!")
         money += int(2*bet)
 
     elif DealerSum > PlayerSum:
-        print("You lost this hand and %s dollars!" % int(bet))
+        print(f"You lost this hand and {int(bet)} dollars!")
 
     elif DealerSum == PlayerSum:
         if PlayerSum == 0:
-            print("You went bust! You lose %s dollars." % bet)
+            print(f"You went bust! You lose {bet} dollars.")
         else:
-            print("You drew with the dealer. You get your bet of %s dollars back." % bet)
+            print(f"You drew with the dealer. You get your bet of {bet} dollars back.")
             money += bet
     
     else:
@@ -244,7 +243,7 @@ def DealerDraw(DealerSum, Deck, DealerAceCount ):
         if DealerSum > 21 and DealerAceCount > 0:
             DealerSum -= 10
             DealerAceCount -= 1
-        print("Dealer draws a %s of %s. The dealer shows %s total.\n" % (face, suit, DealerSum))
+        print(f"Dealer draws a {face} of {suit}. The dealer shows {DealerSum} total.\n")
 
     return DealerSum
 
@@ -258,7 +257,7 @@ def Bet(money):
         print("You cannot bet 0 or a negative value")
         return 'continue'
     elif bet > money:
-        print("You don't have enough money to bet %s dollars. You have %s dollars.\n" % (bet, money))
+        print(f"You don't have enough money to bet {bet} dollars. You have {money} dollars.\n")
         return 'continue'
     else:
         return bet

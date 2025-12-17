@@ -1,5 +1,6 @@
 import random as rand
 import BlackjackFunctions as bj
+import BlackjackGUI as GUI
 
 money = 100
 
@@ -29,7 +30,7 @@ while True:
             money = 100
             continue
 
-    print("You have %s dollars. How much would you like to bet?\n" % money)
+    print(f"You have {money} dollars. How much would you like to bet?\n")
 
     bet = bj.Bet(money)
    
@@ -37,9 +38,9 @@ while True:
         continue
 
     money -= bet
-    print("You bet %s dollars. You now have %s dollars.\n" % (bet, money))
+    print(f"You bet {bet} dollars. You now have {money} dollars.\n")
 
-    Deck = [i  for i in range(1,53)] # list comp is much neater and nicer than a loop
+    Deck = [i  for i in range(1,53)]
 
     # drawing the two cards for your hand
     
@@ -53,7 +54,7 @@ while True:
             PlayerAceCount += 1
 
         PlayerSum += val
-        print("You drew a %s of %s.\n" % (val,suit))
+        print(f"You drew a {val} of {suit}.\n")
         
     PlayerHand = [['10',10, 'Hearts'],['10',10,'Spades']]
     PlayerSum = 20
@@ -69,9 +70,9 @@ while True:
 
         DealerSum += val
         if i == 0:
-            print("The dealer shows a %s of %s.\n" % (face, suit))
+            print(f"The dealer shows a {face} of {suit}.\n")
         if DealerHand[0][0] == 'Ace' and i == 0:
-            print("The dealer has shown an ace, would you like to bet insurance? It will cost %s dollars. \n y (yes), n (no)" % int(bet/2))
+            print(f"The dealer has shown an ace, would you like to bet insurance? It will cost {int(bet/2)} dollars. \n y (yes), n (no)")
             choice = input()
             if choice == 'y' and money >= int(bet/2):
                 InsuranceBet = int(bet/2)
@@ -82,11 +83,11 @@ while True:
     action, PlayerSum, money, bet, Deck = bj.PlayerAction(PlayerHand, PlayerSum, PlayerAceCount, DealerSum, DealerAceCount, money, bet, Deck)
     
     if action != 'f':    
-        print("The dealer reveals a %s to show %s total. \n" % (DealerHand[1][0], DealerSum))
+        print(f"The dealer reveals a {DealerHand[1][0]} to show {DealerSum} total. \n")
 
         if InsuranceBet != 0:
             if DealerHand[1][0] == 10:
-                print("Congrats! Insurance paid off, and you earned %s. You now have %s dollars" % int(1.5 * InsuranceBet))
+                print(f"Congrats! Insurance paid off, and you earned {int(1.5 * InsuranceBet)}. You now have {money} dollars")
                 money += int(1.5*InsuranceBet)
                 InsuranceBet = 0
             else:
@@ -95,6 +96,6 @@ while True:
                 
         DealerSum = bj.DealerDraw(DealerSum, Deck, DealerAceCount)
 
-        print("Dealer shows %s." % (DealerSum))
+        print(f"Dealer shows {DealerSum}.")
 
         money = bj.Scoring(PlayerSum, DealerSum, money, bet)

@@ -1,43 +1,43 @@
 import pytest
 import BlackjackFunctions as bj
 
-# basic variables
+MONEY = 100
+BET = 10
 
-money = 100
-bet = 10
+def test_Bet_NonInt():
+    bj.input = lambda: "Word"
+    output = bj.Bet(MONEY)
+    assert output == 'continue'
+def test_Bet_Zero():
+    bj.input = lambda: 0
+    output = bj.Bet(MONEY)
+    assert output == 'continue'
+def test_Bet_Negative():
+    bj.input = lambda: -1
+    output = bj.Bet(MONEY)
+    assert output == 'continue'
+def test_Bet_OverBet():
+    bj.input = lambda: 2 * MONEY
+    output = bj.Bet(MONEY)
+    assert output == 'continue'
+def test_Bet_Valid():
+    bj.input = lambda: BET
+    output = bj.Bet(MONEY)
+    assert output == BET
 
-# check bet logic
+def test_chooseDescribeCard():
+    Deck = [1]
+    assert bj.chooseDescribeCard(Deck) == ("Spades", "Ace", 11, [1])
 
-# check starting hands
-
-# Check Player Action
-def test_PlayerAction_Bust():
-    pass
-
-# Check Choose describe Card
-
-# Check Split Card
-
-# Check Dealer Draw
-
-# Check Bet Function
-
-# Check Scoring
-# Reasoning for the cases. You get double the bet if you win because the bet was already deducted. If you win you get yout bet back twice.
-# Loss: You already lost the money for the bet by this point so nothing changes for money.
-# Draw: You need your bet back to be even
-# Should also include a case for a natural Blackjack and for insurance payouts.
 
 def test_Scoring_Win():
-    assert bj.Scoring(1,0,money,bet) == money + int(bet * 2)
+    assert bj.Scoring(1,0,MONEY,BET) == MONEY + int(BET * 2)
 
 def test_Scoring_Loss():
-    assert bj.Scoring(0,1,money,bet) == money
+    assert bj.Scoring(0,1,MONEY,BET) == MONEY
 
 def test_Scoring_Draw():
-    assert bj.Scoring(1,1,money,bet) == money + bet
+    assert bj.Scoring(1,1,MONEY,BET) == MONEY + BET
 
-# Going bust sets you at 0, if you bust you do not win even if you draw  with the dealer
-def test_Scoring_Draw_Bust():
-    assert bj.Scoring(0,0,100,10) == money
-
+def test_Scoring_Bust():
+    assert bj.Scoring(0,0,MONEY,BET) == MONEY
