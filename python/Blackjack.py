@@ -41,8 +41,6 @@ while True:
     print(f"You bet {bet} dollars. You now have {money} dollars.\n")
 
     Deck = [i  for i in range(1,53)]
-
-    # drawing the two cards for your hand
     
     PlayerSum = 0
     
@@ -55,10 +53,7 @@ while True:
 
         PlayerSum += val
         print(f"You drew a {val} of {suit}.\n")
-        
-    PlayerHand = [['10',10, 'Hearts'],['10',10,'Spades']]
-    PlayerSum = 20
-
+        #split card
     DealerSum = 0
 
     for i in range(2):
@@ -79,6 +74,13 @@ while True:
                 money -= InsuranceBet
             else:
                 InsuranceBet = 0
+
+    if PlayerHand[0][1] == PlayerHand[1][1]:
+        print({"Would you like to split your hand?\nyes (y) no (no)"})
+        choice = str(input)
+        if choice == 'y':
+            money = bj.SplitCard(PlayerHand[0], PlayerHand[1], PlayerHand[0][1],PlayerHand[1][1], DealerSum, PlayerSum, )
+            continue
 
     action, PlayerSum, money, bet, Deck = bj.PlayerAction(PlayerHand, PlayerSum, PlayerAceCount, DealerSum, DealerAceCount, money, bet, Deck)
     
