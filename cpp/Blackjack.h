@@ -3,17 +3,19 @@
 #include <iostream>
 #include <array>
 #include <string>
-#include <numeric>
 #include <random>
 #include <ctime>
 #include <vector>
+#include <tuple>
+
+using namespace std;
 
 class Card
 {
     public:
         int deckNumber; 
-        std::string Rank;
-        std::string Suit;
+        string Rank;
+        string Suit;
         int Value;
 
         int getValue(int deckNumber)
@@ -22,12 +24,12 @@ class Card
             if (iRank == 1){return 11;}
             else if (iRank == 11 || iRank == 12 || iRank == 0){return 10;}
             else if (iRank > 1 && iRank < 11){return iRank;}
-            else{std::cout << "Rank Error: Invalid iRank.\n"; return -1;}
+            else{cout << "Rank Error: Invalid iRank.\n"; return -1;}
         };
-        std::string getRank(int deckNumber)
+        string getRank(int deckNumber)
         {
             int iRank = deckNumber % 13;
-            std::string Rank;
+            string Rank;
             if (iRank==1){Rank="Ace";}
             else if (iRank==2){Rank="Two";}
             else if (iRank==3){Rank="Three";}
@@ -41,19 +43,19 @@ class Card
             else if (iRank==11){Rank="Jack";}
             else if (iRank==12){Rank="Queen";}
             else if (iRank==0){Rank="King";}
-            else{std::cout << "Rank Error: Invalid iRank.\n"; Rank="Invalid";}
+            else{cout << "Rank Error: Invalid iRank.\n"; Rank="Invalid";}
             return Rank;
         };
 
-        std::string getSuit(int deckNumber)
+        string getSuit(int deckNumber)
         {
             int iSuit = deckNumber / 13;
-            std::string Suit;
+            string Suit;
             if (iSuit == 0){Suit = "Spades";}
             else if (iSuit == 1){Suit ="Hearts";}
             else if (iSuit == 2){Suit ="Clubs";}
             else if (iSuit == 3){Suit="Diamonds";}
-            else{std::cout << "Suit Error: Invalid iSuit.\n"; Suit="Invalid";}
+            else{cout << "Suit Error: Invalid iSuit.\n"; Suit="Invalid";}
             return Suit;
         };
 
@@ -61,18 +63,18 @@ class Card
 
         int getiSuit(int deckNumber){return deckNumber / 13;}
 
-        std::string getCard(std::string Rank, std::string Suit){return Rank + " of " + Suit;};
+        string getCard(string Rank, string Suit){return Rank + " of " + Suit;};
 
 };
 
 class Deck
 {
     public:
-        std::vector<Card> deck;
+        vector<Card> deck;
 
-        std::vector<Card> createDeck()
+        vector<Card> createDeck()
         {
-            std::vector<Card> deck;
+            vector<Card> deck;
 
             for(int i = 0; i < 52; i++)
             {
@@ -87,27 +89,27 @@ class Deck
             
             return deck;
         }
-        Card dealFromDeck(std::vector<Card> deck)
+        tuple<Card, vector<Card>> dealFromDeck()
         {
-            srand(std::time(0));
-            int randomIndex = rand() % sizeof(deck);
+            srand(time(0) + deck.size());
+            int randomIndex = rand() % deck.size();
             Card dealtCard = deck[randomIndex];
             deck.erase(deck.begin() + randomIndex);
-            return dealtCard;
+            tuple<Card, vector<Card>> resultantTuple = make_tuple(dealtCard, deck);
+            return resultantTuple;
         }
-
 
 };
 
 class Hand
 {
     public:
-        std::vector<Card> hand;
+        vector<Card> hand;
         int HandValue;
         int AcesAvailable;
         int AcesUsed;
         
-        int getHandValue(std::vector<Card> hand)
+        int getHandValue(vector<Card> hand)
         {
            int total = 0;
            for (int i = 0; i < hand.size(); i++)
@@ -117,7 +119,7 @@ class Hand
             return total;
         }
 
-        int getAcesAvailable(std::vector<Card> hand, int AcesUsed)
+        int getAcesAvailable(vector<Card> hand, int AcesUsed)
         {
             int AceCount = 0;
             for (int i = 0; i < hand.size(); i++)
@@ -137,25 +139,26 @@ class Hand
 int Scoring(int PlayerTotal, int DealerTotal, int bet, int money)
 {
     if (PlayerTotal == 22) {money -= bet;}
-    else if (PlayerTotal == DealerTotal){std::cout << "It's a push! Your bet is returned.\n"; money += bet;}
-    else if (PlayerTotal > DealerTotal){std::cout << "You win! You gain " << bet << " dollars.\n"; money += 2*bet;}
-    else if (PlayerTotal < DealerTotal && DealerTotal != 22){std::cout << "You lose! You lost " << bet << " dollars.\n";}
-    else {std::cout << "Scoring Error: Invalid PlayerTotal and/or DealerTotal values.\n";}
+    else if (PlayerTotal == DealerTotal){cout << "It's a push! Your bet is returned.\n"; money += bet;}
+    else if (PlayerTotal > DealerTotal){cout << "You win! You gain " << bet << " dollars.\n"; money += 2*bet;}
+    else if (PlayerTotal < DealerTotal && DealerTotal != 22){cout << "You lose! You lost " << bet << " dollars.\n";}
+    else {cout << "Scoring Error: Invalid PlayerTotal and/or DealerTotal values.\n";}
     return money;
 }
 
 
-int DealerAction(Hand DealerHand, Deck deck)
+tuple<int, Hand, Deck> DealerAction(Hand DealerHand, Deck deck)
 {
     int DealerTotal = DealerHand.getHandValue(DealerHand.hand);
-    std::cout << "The dealer shows a total of " << DealerTotal << ".\n";
+    cout << "The dealer shows a total of " << DealerTotal << ".\n";
     while (DealerTotal < 17)
     {
-        Card newCard = deck.dealFromDeck(deck.deck);
+        Card newCard;
+        tie(newCard, deck.deck) = deck.dealFromDeck();
         DealerHand.hand.push_back(newCard);
         DealerTotal += newCard.Value;
         if (newCard.Rank == "Ace"){DealerHand.AcesAvailable = DealerHand.getAcesAvailable(DealerHand.hand, DealerHand.AcesUsed);}
-        std::cout << "The dealer draws a " << newCard.getCard(newCard.Rank, newCard.Suit) << ", which brings the dealer's total to " << DealerTotal << ".\n";
+        cout << "The dealer draws a " << newCard.getCard(newCard.Rank, newCard.Suit) << ", which brings the dealer's total to " << DealerTotal << ".\n";
         if (DealerTotal > 21)
         {
             if (DealerHand.AcesAvailable > 0)
@@ -163,44 +166,45 @@ int DealerAction(Hand DealerHand, Deck deck)
                 DealerTotal -= 10;
                 DealerHand.AcesUsed++;
                 DealerHand.AcesAvailable = DealerHand.getAcesAvailable(DealerHand.hand, DealerHand.AcesUsed);
-                std::cout << "An Ace saved the dealer from going bust! The dealer's total now totals to " << DealerTotal << ".\n";
+                cout << "An Ace saved the dealer from going bust! The dealer's total now totals to " << DealerTotal << ".\n";
                 continue;
             }
             else{DealerTotal = 22; break;}
         }
     }
-    if (DealerTotal == 22){std::cout << "The dealer has gone bust!\n";}
-    else{std::cout << "The dealer's final total is " << DealerTotal << ".\n";}
-    return DealerTotal;
+    if (DealerTotal == 22){cout << "The dealer has gone bust!\n";}
+    else{cout << "The dealer's final total is " << DealerTotal << ".\n";}
+    tuple<int, Hand, Deck> resultantTuple = make_tuple(DealerTotal, DealerHand, deck);
+    return resultantTuple;
 }
 
-int PlayerAction(Hand PlayerHand, Deck deck, Card DealerCard2, int PlayerTotal, int bet, int money)
+tuple<int, Hand, Deck, int, int> PlayerAction(Hand PlayerHand, Deck deck, Card DealerCard2, int PlayerTotal, int bet, int money)
 {
     char choice;
     bool initialTurn  = true;
 
         while (1)
         {
-            if (initialTurn == true)
+            if (PlayerHand.hand.size() == 2)
             {
-            std::cout << "Your hand totals to " << PlayerTotal << ". The dealer shows a " << DealerCard2.getCard(DealerCard2.Rank, DealerCard2.Suit) << ".\n" << "Would you like to (h)it, (s)tand, or (d)ouble down?\n";
-            std::cin >> choice;
+            cout << "Your hand totals to " << PlayerTotal << ". The dealer shows a " << DealerCard2.getCard(DealerCard2.Rank, DealerCard2.Suit) << ".\n" << "Would you like to (h)it, (s)tand, or (d)ouble down?\n";
+            cin >> choice;
             }
             else
             {
-                std::cout << "Your hand totals to " << PlayerTotal << ". The dealer shows a " << DealerCard2.getCard(DealerCard2.Rank, DealerCard2.Suit) << ".\n" << "Would you like to (h)it or (s)tand?\n";
-                std::cin >> choice;
+                cout << "Your hand totals to " << PlayerTotal << ". The dealer shows a " << DealerCard2.getCard(DealerCard2.Rank, DealerCard2.Suit) << ".\n" << "Would you like to (h)it or (s)tand?\n";
+                cin >> choice;
             }
 
             if (choice=='h')
             {
-                
-                Card newCard = deck.dealFromDeck(deck.deck);
+                Card newCard;
+                tie(newCard, deck.deck) = deck.dealFromDeck();
                 PlayerHand.hand.push_back(newCard);
                 PlayerTotal += newCard.Value;
                 if (newCard.Rank == "Ace"){PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);}
                 
-                std::cout << "Your new card is the " << newCard.getCard(newCard.Rank, newCard.Suit) << ", which brings your total to " << PlayerTotal << ".\n";
+                cout << "Your new card is the " << newCard.getCard(newCard.Rank, newCard.Suit) << ", which brings your total to " << PlayerTotal << ".\n";
 
                 if (PlayerTotal > 21)
                 {
@@ -209,7 +213,7 @@ int PlayerAction(Hand PlayerHand, Deck deck, Card DealerCard2, int PlayerTotal, 
                         PlayerTotal -= 10;
                         PlayerHand.AcesUsed++;
                         PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);
-                        std::cout << "An Ace saved you from going bust! Your hand now totals to " << PlayerTotal << ".\n";
+                        cout << "An Ace saved you from going bust! Your hand now totals to " << PlayerTotal << ".\n";
                     }
                     else
                     {
@@ -218,19 +222,19 @@ int PlayerAction(Hand PlayerHand, Deck deck, Card DealerCard2, int PlayerTotal, 
                     }
                 }
 
-                initialTurn = false;
             }   
             else if (choice=='s'){break;}
-            else if (choice =='d' && initialTurn == true)
+            else if (choice =='d' && PlayerHand.hand.size() == 2)
             {
                 money -= bet;
                 bet *= 2;
-                if (money < 0){std::cout << "You cannot bet yourself into debt.\n\n"; continue;}
-                Card newCard = deck.dealFromDeck(deck.deck);
+                if (money < 0){cout << "You cannot bet yourself into debt.\n\n"; continue;}
+                Card newCard;
+                tie(newCard, deck.deck) = deck.dealFromDeck();
                 PlayerHand.hand.push_back(newCard);
                 PlayerTotal += newCard.Value;
                 if (newCard.Rank == "Ace"){PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);}
-                std::cout << "Your final card is the " << newCard.getCard(newCard.Rank, newCard.Suit) << ", which brings your total to " << PlayerTotal << ", and brings your total bet to " << bet << ".\n";
+                cout << "Your final card is the " << newCard.getCard(newCard.Rank, newCard.Suit) << ", which brings your total to " << PlayerTotal << ", and brings your total bet to " << bet << ".\n";
                 if (PlayerTotal > 21)
                 {
                     if (PlayerHand.AcesAvailable > 0)
@@ -238,7 +242,7 @@ int PlayerAction(Hand PlayerHand, Deck deck, Card DealerCard2, int PlayerTotal, 
                     PlayerTotal -= 10;
                     PlayerHand.AcesUsed++;
                     PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);
-                    std::cout << "An Ace saved you from going bust! Your hand now totals to " << PlayerTotal << ".\n";
+                    cout << "An Ace saved you from going bust! Your hand now totals to " << PlayerTotal << ".\n";
                     }
                     else
                     {
@@ -249,10 +253,11 @@ int PlayerAction(Hand PlayerHand, Deck deck, Card DealerCard2, int PlayerTotal, 
                 
                 break;
             }
-            else{std::cout << "Please enter a valid option. The only valid options are: 'h', 's', and 'd'. Doubling down is only valid on the initial turn.\n"; continue;}
+            else{cout << "Please enter a valid option. The only valid options are: 'h', 's', and 'd'. Doubling down is only valid on the initial turn.\n"; continue;}
         }
 
-    if (PlayerTotal == 22){std::cout << "You have gone bust! You've lost your bet of " << bet << " dollars.\n";}
-    else{std::cout << "Your final total is " << PlayerTotal << ".\n";}
-    return PlayerTotal;
+    if (PlayerTotal == 22){cout << "You have gone bust! You've lost your bet of " << bet << " dollars.\n";}
+    else{cout << "Your final total is " << PlayerTotal << ".\n";}
+    tuple<int, Hand, Deck, int, int> resultantTuple = make_tuple(PlayerTotal, PlayerHand, deck, bet, money);
+    return resultantTuple;
 }
