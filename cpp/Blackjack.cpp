@@ -71,37 +71,37 @@ int main()
         PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, 0);
         DealerHand.AcesAvailable = DealerHand.getAcesAvailable(DealerHand.hand, 0);
 
-        int PlayerTotal = PlayerHand.getHandValue(PlayerHand.hand);
-        int DealerTotal = DealerHand.getHandValue(DealerHand.hand);
+        PlayerHand.HandValue = PlayerHand.getHandValue(PlayerHand.hand);
+        DealerHand.HandValue = DealerHand.getHandValue(DealerHand.hand);
         cout << "Your hand is: the " << PlayerCard1.getCard(PlayerCard1.Rank, PlayerCard1.Suit) << " and the " << PlayerCard2.getCard(PlayerCard2.Rank, PlayerCard2.Suit) << ".\n";
 
-        if (PlayerTotal > 21)
+        if (PlayerHand.HandValue > 21)
         {
             if (PlayerHand.AcesAvailable > 0)
             {
-            PlayerTotal -= 10;
+            PlayerHand.HandValue -= 10;
             PlayerHand.AcesUsed++;
             PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);
 
-            cout << "An Ace saved you from going bust! Your hand now totals to " << PlayerTotal << ".\n";
+            cout << "An Ace saved you from going bust! Your hand now totals to " << PlayerHand.HandValue << ".\n";
             }
             else
             {
                 cout << "You went bust! You lose " << bet << " dollars.\n";
-                PlayerTotal = 22;
+                PlayerHand.HandValue = 22;
                 continue;
             }
         }
-        else if (PlayerTotal == 21)
+        else if (PlayerHand.HandValue == 21)
         {
             cout << " Natural Blackjack! You win " << bet*1.5 << " dollars.\n";
             money += bet*2.5;
             continue;
         }
 
-        tie(PlayerTotal, PlayerHand, deck, bet, money) = PlayerAction(PlayerHand, deck, DealerCard2, PlayerTotal, bet, money);
-        tie(DealerTotal, DealerHand, deck) = DealerAction(DealerHand, deck);
-        money = Scoring(PlayerTotal, DealerTotal, bet, money);
+        tie(PlayerHand.HandValue, PlayerHand, deck, bet, money) = PlayerAction(PlayerHand, deck, DealerCard2, bet, money);
+        tie(DealerHand.HandValue, DealerHand, deck) = DealerAction(DealerHand, deck);
+        money = Scoring(PlayerHand.HandValue, DealerHand.HandValue, bet, money);
 
     }
 
