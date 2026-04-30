@@ -1,6 +1,7 @@
 /* 
 The purpose of this is to create a game of blackjack played in the terminal
 TODO:
+* Fix Bug where Ace is not used properly
 * Insurance
 * Splitting
 * Graphical ASCII
@@ -238,7 +239,7 @@ int main()
             cout << "You cannot bet more than you have.\n";
             continue;
         }
-        else if (bet < 0) 
+        else if (bet <= 0) 
         {   
             cout << "You cannot bet a negative amount.\n";
             continue;
