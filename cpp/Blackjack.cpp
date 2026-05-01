@@ -1,14 +1,12 @@
 /* 
 The purpose of this is to create a game of blackjack played in the terminal
 TODO:
-* Fix Bug where Ace is not used properly
-* Insurance
-* Splitting
+* Splitting  - Seems to have an issue with standing giving an extra card with the second hand at least. Needs testing.
 * Graphical ASCII
 */
 
 #include <iostream>
-#include <array>
+#include <sstream>
 #include <string>
 #include <random>
 #include <ctime>
@@ -40,20 +38,24 @@ class Card
         {
             int iRank = deckNumber % 13;
             string Rank;
-            if (iRank==1){Rank="Ace";}
-            else if (iRank==2){Rank="Two";}
-            else if (iRank==3){Rank="Three";}
-            else if (iRank==4){Rank="Four";}
-            else if (iRank==5){Rank="Five";}
-            else if (iRank==6){Rank="Six";}
-            else if (iRank==7){Rank="Seven";}
-            else if (iRank==8){Rank="Eight";}
-            else if (iRank==9){Rank="Nine";}
-            else if (iRank==10){Rank="Ten";}
-            else if (iRank==11){Rank="Jack";}
-            else if (iRank==12){Rank="Queen";}
-            else if (iRank==0){Rank="King";}
-            else{cout << "Rank Error: Invalid iRank.\n"; Rank="Invalid";}
+            switch (iRank)
+            {
+                case 1:Rank="Ace";break;
+                case 2:Rank="Two";break;
+                case 3:Rank="Three";break;
+                case 4:Rank="Four";break;
+                case 5:Rank="Five";break;
+                case 6:Rank="Six";break;
+                case 7:Rank="Seven";break;
+                case 8:Rank="Eight";break;
+                case 9:Rank="Nine";break;
+                case 10:Rank="Ten";break;
+                case 11:Rank="Jack";break;
+                case 12:Rank="Queen";break;
+                case 0:Rank="King";break;
+                default:cout << "Rank Error: Invalid iRank.\n"; Rank="Invalid Rank";break;
+            }
+
             return Rank;
         };
 
@@ -65,7 +67,7 @@ class Card
             else if (iSuit == 1){Suit ="Hearts";}
             else if (iSuit == 2){Suit ="Clubs";}
             else if (iSuit == 3){Suit="Diamonds";}
-            else{cout << "Suit Error: Invalid iSuit.\n"; Suit="Invalid";}
+            else{cout << "Suit Error: Invalid iSuit.\n"; Suit="Invalid Suit";}
             return Suit;
         };
 
@@ -139,7 +141,7 @@ class Hand
                     AceCount++;
                 }
             }
-            int AcesAvailable = AceCount - AcesUsed; 
+            int AcesAvailable = AceCount - AcesUsed;
             return AcesAvailable;
         }
 
@@ -167,8 +169,7 @@ tuple<int, Hand, Deck> DealerAction(Hand DealerHand, Deck deck)
 {
     DealerHand.HandValue = DealerHand.getHandValue(DealerHand.hand);
 
-    if (DealerHand.HandValue >= 17){cout << "The dealer shows a total of " << DealerHand.HandValue << ".\nThe dealer stands.\n";}
-    else{cout << "The dealer shows a total of " << DealerHand.HandValue << ".\n";}
+    if (DealerHand.HandValue >= 17){cout << "The dealer stands at " << DealerHand.HandValue << ".\n";}
     
     while (DealerHand.HandValue < 17)
     {
@@ -210,6 +211,7 @@ int Scoring(int PlayerTotal, int DealerTotal, int bet, int money)
 
 int main()
 {
+    int round = 0;
     cout << "Welcome to the Blackjack Table.\n";
 
     while(true)
@@ -231,8 +233,21 @@ int main()
         }
 
         int bet;
-        cout << "You have " << money << " dollars. How much would you like to bet? Bets are rounded to the nearest whole number.\n";
-        cin >> bet;
+        string line;
+
+        cout << "You have " << money << " dollars. How much would you like to bet? Only integer bets (1, not 1.0) are allowed.\n";
+        while (getline(cin, line))
+        {
+            istringstream ss(line);
+            if(ss >> bet)
+            {
+                if(ss.eof())
+                {
+                    break;
+                }
+                else{cout << "Please enter a valid integer.\n";}
+            }
+        }
 
         if (bet > money)
         {
@@ -241,7 +256,7 @@ int main()
         }
         else if (bet <= 0) 
         {   
-            cout << "You cannot bet a negative amount.\n";
+            cout << "You cannot bet a negative amount or zero.\n";
             continue;
         }
         else 
@@ -250,7 +265,12 @@ int main()
             cout << "You bet " << bet << " dollars and now have " << money << " dollars left over.\n";
         }
         Deck deck;
-        deck.deck = deck.createDeck();
+
+        if(round % 10 == 0)
+        {
+            deck.deck = deck.createDeck();
+        }
+        
         Hand PlayerHand;
         Hand PlayerHand2; //Unneeded unless splitting
         Hand DealerHand;
@@ -272,8 +292,11 @@ int main()
         tie(DealerCard2, deck.deck) = deck.dealFromDeck();
         DealerHand.hand.push_back(DealerCard2);
 
-        PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, 0);
-        DealerHand.AcesAvailable = DealerHand.getAcesAvailable(DealerHand.hand, 0);
+        PlayerHand.AcesUsed = 0;
+        PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);
+        
+        DealerHand.AcesUsed = 0;
+        DealerHand.AcesAvailable = DealerHand.getAcesAvailable(DealerHand.hand, DealerHand.AcesUsed);
 
         PlayerHand.HandValue = PlayerHand.getHandValue(PlayerHand.hand);
         DealerHand.HandValue = DealerHand.getHandValue(DealerHand.hand);
@@ -281,6 +304,7 @@ int main()
 
         if (PlayerHand.HandValue > 21)
         {
+            cout << "You have " << PlayerHand.AcesAvailable << " Aces available.";
             if (PlayerHand.AcesAvailable > 0)
             {
             PlayerHand.HandValue -= 10;
@@ -303,9 +327,23 @@ int main()
             continue;
         }
 
+        bool insuranceBetPlaced = false;
+        int insuranceBet;
+        if (DealerHand.hand[1].Rank == "Ace")
+        {
+            cout << "The dealer shows an ace. Would you like to buy insurance? (y)es or (n)o.\n";
+            cin >> choice;
+            if (choice == 'y')
+            {
+                insuranceBet = bet / 2;
+                money -= insuranceBet;
+                if (money < 0){cout << "You cannot bet yourself into debt.\n\n"; money += insuranceBet; continue;}
+                insuranceBetPlaced = true;
+            }
+        }
+
         //Player Action
 
-        bool initialTurn  = true;
         bool splitCard = false;
 
         while (true)
@@ -393,8 +431,15 @@ int main()
                 bet *= 2;
                 if (money < 0){cout << "You cannot bet yourself into debt.\n\n"; money += bet; continue;}
 
-                PlayerHand2.hand[0] = PlayerHand.hand[1];
+                Card splitCard;
+                splitCard.deckNumber = PlayerHand.hand[1].deckNumber;
+                splitCard.Rank = PlayerHand.hand[1].Rank;
+                splitCard.Suit = PlayerHand.hand[1].Suit;
+                splitCard.Value = PlayerHand.hand[1].Value;
+                
+                PlayerHand2.hand.push_back(splitCard);
                 PlayerHand.hand.erase(PlayerHand.hand.begin() + 1);
+
                 if (PlayerHand.hand[0].Rank == "Ace")
                 {
                     PlayerHand.AcesUsed = 0;
@@ -403,11 +448,20 @@ int main()
                     PlayerHand2.AcesAvailable = 1;
 
                 }
+                else
+                {
+                    PlayerHand.AcesUsed = 0;
+                    PlayerHand.AcesAvailable = 0;
+                    PlayerHand2.AcesUsed = 0;
+                    PlayerHand2.AcesAvailable = 0;
+                }
 
                 Card newCard;
                 tie(newCard, deck.deck) = deck.dealFromDeck();
+                if (newCard.Rank == "Ace"){PlayerHand.AcesAvailable = PlayerHand.getAcesAvailable(PlayerHand.hand, PlayerHand.AcesUsed);}
                 PlayerHand.hand.push_back(newCard);
                 tie(newCard, deck.deck) = deck.dealFromDeck();
+                if (newCard.Rank == "Ace"){PlayerHand2.AcesAvailable = PlayerHand2.getAcesAvailable(PlayerHand2.hand, PlayerHand2.AcesUsed);}
                 PlayerHand2.hand.push_back(newCard);
 
                 PlayerHand.HandValue = PlayerHand.getHandValue(PlayerHand.hand);
@@ -415,7 +469,7 @@ int main()
 
                 while(true)
                 {
-                    cout << "Your first hand totals to " << PlayerHand.HandValue << ". The dealer shows a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ".\n" << "Would you like to (h)it or (s)tand?\n";
+                    cout << "Your first hand is made up of the "<< PlayerHand.hand[0].getCard(PlayerHand.hand[0].Rank, PlayerHand.hand[0].Suit) << " and " << PlayerHand.hand[1].getCard(PlayerHand.hand[1].Rank, PlayerHand.hand[1].Suit) << ", totaling to " << PlayerHand.HandValue << ". The dealer shows a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ".\n" << "Would you like to (h)it or (s)tand?\n";
                     cin >> choice;
 
                     if(choice ='h')
@@ -449,7 +503,7 @@ int main()
 
                 while(true)
                 {
-                    cout << "Your second hand totals to " << PlayerHand2.HandValue << ". The dealer shows a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ".\n" << "Would you like to (h)it or (s)tand?\n";
+                    cout << "Your second hand is made up of the "<< PlayerHand2.hand[0].getCard(PlayerHand2.hand[0].Rank, PlayerHand2.hand[0].Suit) << " and " << PlayerHand2.hand[1].getCard(PlayerHand2.hand[1].Rank, PlayerHand2.hand[1].Suit) << ", totaling to " << PlayerHand2.HandValue << ". The dealer shows a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ".\n" << "Would you like to (h)it or (s)tand?\n";
                     cin >> choice;
 
                     if(choice ='h')
@@ -484,10 +538,21 @@ int main()
             }
  
         }
-        if (PlayerHand.HandValue > 21){cout << "You have gone bust! You've lost your bet of " << bet << " dollars.\n";}
+        if(PlayerHand.HandValue > 21){cout << "You have gone bust! You've lost your bet of " << bet << " dollars.\n";}
         else{cout << "Your final total is " << PlayerHand.HandValue << ".\n";}
 
         //Dealer Action
+        if(insuranceBetPlaced == true)
+        {
+            if(DealerHand.hand[0].Value == 10)
+            {
+                cout << "The Dealer shows a blackjack with a " << DealerHand.hand[0].getCard(DealerHand.hand[0].Rank, DealerHand.hand[0].Suit) << " and a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ". Insurance bets have paid off! You made a profit of " << insuranceBet << " dollars.\n";
+                money += 2 * insuranceBet;
+            }
+            else{cout << "The Dealer doesn't show a blackjack with a " << DealerHand.hand[0].getCard(DealerHand.hand[0].Rank, DealerHand.hand[0].Suit) << " and a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ", for a total of " << DealerHand.HandValue << ". Insurance bets have not paid off.\n";}
+        }
+        else{cout << "The Dealer shows a " << DealerHand.hand[0].getCard(DealerHand.hand[0].Rank, DealerHand.hand[0].Suit) << " and a " << DealerHand.hand[1].getCard(DealerHand.hand[1].Rank, DealerHand.hand[1].Suit) << ", for a total of " << DealerHand.HandValue << ".\n";}
+
         tie(DealerHand.HandValue, DealerHand, deck) = DealerAction(DealerHand, deck);
 
         //Scoring
@@ -499,6 +564,8 @@ int main()
         {
             money = Scoring(PlayerHand.HandValue, DealerHand.HandValue, bet, money);
         }
+
+        round++;
     }
 
     cout << "Thanks for playing Blackjack!\n";
