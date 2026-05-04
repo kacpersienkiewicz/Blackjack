@@ -1,1 +1,1 @@
-
+This directory contains both the OOP and functional approach to the blackjack CLI game. The OOP version is put into its directory to avoid any sort of confusion, while the functional version is split up into a main file, functions and tests.
