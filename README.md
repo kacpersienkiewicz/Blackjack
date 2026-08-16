@@ -5,3 +5,7 @@ I have come to believe that one of the best ways to learn a language is to basic
 The project is also pretty modular, since you can avoid some of the trickier aspects (splitting, insurance, a GUI, any online capabilities) for later and still have a functioning terminal game. 
 
 This repository should include a version of blackjack in every programming language I am interested in, possibly in multiple versions (an OOP or functional version, for example).
+
+## Versions
+* Python (Both an OOP and functional aproach)
+* C++ (OOP approach)
