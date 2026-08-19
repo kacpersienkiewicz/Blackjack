@@ -9,3 +9,7 @@ This repository should include a version of blackjack in every programming langu
 ## Versions
 * Python (Both an OOP and functional aproach)
 * C++ (OOP approach)
+
+### TODO
+* Javascript version
+* Java version
