@@ -13,5 +13,6 @@ This repository should include a version of blackjack in every programming langu
 ### TODO
 * Javascript version
 * Java version
+* C Version (no objects, Structs as needed)
 * C# version
 * Rust version
